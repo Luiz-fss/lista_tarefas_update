@@ -10,11 +10,12 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
     listaDeTarefas: []
   ));
 
+  bool verificarSeTemItemSalvo = false;
 
   Future<File> buscarAquivo() async{
     final diretorioDoAplicativo = await getApplicationDocumentsDirectory();
 
-    return new File("${diretorioDoAplicativo.path}/tarefa.json");
+    return  File("${diretorioDoAplicativo.path}/tarefa.json");
   }
 
   Future<File> salvarNovaTarefa () async{
@@ -30,5 +31,31 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
    }catch(e){
      return "";
    }
+  }
+
+  @override
+  void adicionarNovaTarefa(String textoDaTarefa){
+    Map<String,dynamic> novaTarefa = Map();
+    List tarefaAdicionada = [];
+    novaTarefa["title"] = textoDaTarefa;
+    novaTarefa["ok"] = false;
+
+    tarefaAdicionada.add(novaTarefa);
+    salvarNovaTarefa();
+    emit(state.patchState(listaDeTarefas: tarefaAdicionada));
+  }
+
+  @override
+  void atualizarStatusTarefaCompleta(bool check, int index) {
+    List listaTarefaAtualizada = state.listaDeTarefas;
+    listaTarefaAtualizada[index]["ok"] = check;
+    salvarNovaTarefa();
+    emit(state.patchState(listaDeTarefas: listaTarefaAtualizada));
+  }
+
+  Future<void> carregarListaSalva(String data){
+    List lista;
+    lista = json.decode(data);
+    emit(state.patchState(listaDeTarefas: lista));
   }
 }
