@@ -27,8 +27,10 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
   Future<String> lerInformacoesDaLista () async {
    try{
      final arquivo = await buscarAquivo();
+     verificarSeTemItemSalvo = true;
      return arquivo.readAsString();
    }catch(e){
+     verificarSeTemItemSalvo = false;
      return "";
    }
   }
@@ -36,21 +38,22 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
   @override
   void adicionarNovaTarefa(String textoDaTarefa){
     Map<String,dynamic> novaTarefa = Map();
-    List tarefaAdicionada = [];
+    List tarefaAdicionada = state.listaDeTarefas;
     novaTarefa["title"] = textoDaTarefa;
     novaTarefa["ok"] = false;
 
     tarefaAdicionada.add(novaTarefa);
-    salvarNovaTarefa();
     emit(state.patchState(listaDeTarefas: tarefaAdicionada));
+    salvarNovaTarefa();
   }
 
   @override
   void atualizarStatusTarefaCompleta(bool check, int index) {
     List listaTarefaAtualizada = state.listaDeTarefas;
     listaTarefaAtualizada[index]["ok"] = check;
-    salvarNovaTarefa();
+
     emit(state.patchState(listaDeTarefas: listaTarefaAtualizada));
+    salvarNovaTarefa();
   }
 
   Future<void> carregarListaSalva(String data){
