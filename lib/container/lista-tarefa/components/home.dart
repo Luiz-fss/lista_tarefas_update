@@ -16,8 +16,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
-
    ListaTarefaCubit _bloc =  ListaTarefaCubit();
 
   @override
@@ -71,18 +69,39 @@ class _HomeState extends State<Home> {
         margin: const EdgeInsets.all(16),
         child: ListView.builder(
           itemCount: state.listaDeTarefas.length,
-          itemBuilder: (context, index){
-            return CheckboxListTile(
-              title: Text(state.listaDeTarefas[index]["title"]),
-              value: state.listaDeTarefas[index]["ok"],
-              secondary: _retornarIconeDeStatusDaLista(state.listaDeTarefas[index]["ok"],
-              ),
-              onChanged: (valorAlterado){},
-            );
-          },
+          itemBuilder: itensDaLista,
         ),
       );
     }
+  }
+
+  Widget itensDaLista(BuildContext context, int index){
+    return  BlocBuilder<ListaTarefaCubit,ListaTarefaCubitModel>(
+      builder: (context, state){
+        return Dismissible(
+          key: Key(DateTime.now().microsecondsSinceEpoch.toString()),
+          background: Container(
+            color: Colors.red,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [
+                 Icon(Icons.delete,color: Colors.white,)
+              ],
+            ),
+          ),
+          direction: DismissDirection.startToEnd,
+          child: CheckboxListTile(
+            title: Text(state.listaDeTarefas[index]["title"]),
+            value: state.listaDeTarefas[index]["ok"],
+            secondary: _retornarIconeDeStatusDaLista(state.listaDeTarefas[index]["ok"],
+            ),
+            onChanged: (valorAlterado){
+              _bloc.atualizarStatusTarefaCompleta(valorAlterado, index);
+            },
+          ),
+        );
+      },
+    );
   }
 
    Widget _retornarIconeDeStatusDaLista(bool check){
