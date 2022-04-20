@@ -12,13 +12,16 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
 
   bool verificarSeTemItemSalvo = false;
 
+  Map<String,dynamic> ultimaTarefaRemovida;
+  int indexUltimaTarefaRemovida;
+
   Future<File> buscarAquivo() async{
     final diretorioDoAplicativo = await getApplicationDocumentsDirectory();
 
     return  File("${diretorioDoAplicativo.path}/tarefa.json");
   }
 
-  Future<File> salvarNovaTarefa () async{
+  Future<File> salvarDadosPermanentemente () async{
     String dados = json.encode(state.listaDeTarefas);
     final arquivo = await buscarAquivo();
     return arquivo.writeAsString(dados);
@@ -44,7 +47,7 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
 
     tarefaAdicionada.add(novaTarefa);
     emit(state.patchState(listaDeTarefas: tarefaAdicionada));
-    salvarNovaTarefa();
+    salvarDadosPermanentemente();
   }
 
   @override
@@ -53,12 +56,29 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
     listaTarefaAtualizada[index]["ok"] = check;
 
     emit(state.patchState(listaDeTarefas: listaTarefaAtualizada));
-    salvarNovaTarefa();
+    salvarDadosPermanentemente();
   }
 
   Future<void> carregarListaSalva(String data){
     List lista;
     lista = json.decode(data);
     emit(state.patchState(listaDeTarefas: lista));
+  }
+
+  @override
+  Future<void> removerTarefaDaLista(List tarefas, int index) {
+   tarefas.removeAt(index);
+   state.patchState(listaDeTarefas: tarefas);
+   salvarDadosPermanentemente();
+  }
+
+  @override
+  Future<void> desfazerExclusao(
+      Map<String, dynamic> ultimaTarefaRemovida, int indexUltimaTarefaRemovida,
+      List<dynamic> tarefas) {
+    tarefas.insert(indexUltimaTarefaRemovida, ultimaTarefaRemovida);
+    state.patchState(listaDeTarefas: tarefas);
+    salvarDadosPermanentemente();
+
   }
 }
