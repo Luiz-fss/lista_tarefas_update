@@ -80,6 +80,25 @@ class _HomeState extends State<Home> {
       builder: (context, state){
         return Dismissible(
           key: Key(DateTime.now().microsecondsSinceEpoch.toString()),
+          onDismissed: (direcao)async{
+            _bloc.ultimaTarefaRemovida = Map.from(state.listaDeTarefas[index]);
+            _bloc.indexUltimaTarefaRemovida = index;
+            await _bloc.removerTarefaDaLista(state.listaDeTarefas,index);
+            
+            final snack = SnackBar(
+              content: Text("Tarefa \"${_bloc.ultimaTarefaRemovida["title"]}\" removida"),
+              action: SnackBarAction(
+                label: "Desfazer",
+                onPressed: ()async{
+                  await _bloc.desfazerExclusao(
+                      _bloc.ultimaTarefaRemovida, _bloc.indexUltimaTarefaRemovida,
+                      state.listaDeTarefas);
+                },
+              ),
+              duration: Duration(seconds: 3),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snack);
+          },
           background: Container(
             color: Colors.red,
             child: Row(
