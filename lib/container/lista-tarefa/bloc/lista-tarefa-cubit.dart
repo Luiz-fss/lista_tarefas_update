@@ -68,7 +68,7 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
   @override
   Future<void> removerTarefaDaLista(List tarefas, int index) {
    tarefas.removeAt(index);
-   state.patchState(listaDeTarefas: tarefas);
+   emit(state.patchState(listaDeTarefas: tarefas));
    salvarDadosPermanentemente();
   }
 
@@ -77,8 +77,22 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
       Map<String, dynamic> ultimaTarefaRemovida, int indexUltimaTarefaRemovida,
       List<dynamic> tarefas) {
     tarefas.insert(indexUltimaTarefaRemovida, ultimaTarefaRemovida);
-    state.patchState(listaDeTarefas: tarefas);
+    emit(state.patchState(listaDeTarefas: tarefas));
     salvarDadosPermanentemente();
+  }
 
+  Future<void> refresh()async{
+    await Future.delayed(Duration(seconds: 1));
+    state.listaDeTarefas.sort((a,b){
+      if(a["ok"] && !b["ok"]){
+        return 1;
+      }else if(!a["ok"] && b["ok"]){
+        return -1;
+      }else{
+        return 0;
+      }
+    });
+    salvarDadosPermanentemente();
+    emit(state.patchState(listaDeTarefas:state.listaDeTarefas));
   }
 }
