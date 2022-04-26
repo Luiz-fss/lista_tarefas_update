@@ -67,9 +67,12 @@ class _HomeState extends State<Home> {
     }else{
       return Container(
         margin: const EdgeInsets.all(16),
-        child: ListView.builder(
-          itemCount: state.listaDeTarefas.length,
-          itemBuilder: itensDaLista,
+        child: RefreshIndicator(
+          onRefresh: _bloc.refresh,
+          child: ListView.builder(
+            itemCount: state.listaDeTarefas.length,
+            itemBuilder: itensDaLista,
+          ),
         ),
       );
     }
@@ -125,7 +128,7 @@ class _HomeState extends State<Home> {
 
    Widget _retornarIconeDeStatusDaLista(bool check){
      if(check){
-       return const CircleAvatar(child: Icon(Icons.check, color: Colors.green,));
+       return const CircleAvatar(child: Icon(Icons.check, color: Colors.green,),backgroundColor: Colors.black,);
      }else{
        return const CircleAvatar(child: Icon(Icons.warning, color: Colors.amberAccent,));
      }
