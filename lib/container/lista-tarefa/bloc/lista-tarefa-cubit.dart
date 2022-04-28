@@ -92,7 +92,16 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
         return 0;
       }
     });
-    salvarDadosPermanentemente();
     emit(state.patchState(listaDeTarefas:state.listaDeTarefas));
+    salvarDadosPermanentemente();
+  }
+
+  Future<void> removerTodasTarefas()async{
+    List<dynamic> lista = state.listaDeTarefas;
+    for(int i =0; i < state.listaDeTarefas.length;i++){
+      lista.removeAt(i);
+    }
+    emit(state.patchState(listaDeTarefas: lista));
+    salvarDadosPermanentemente();
   }
 }

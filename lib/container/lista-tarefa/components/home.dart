@@ -24,15 +24,27 @@ class _HomeState extends State<Home> {
       create: (context){
         return _bloc;
       },
-      child: Scaffold(
-        appBar:  AppBar(
-          title: const Text(
-            "Lista de Tarefas",
-          ),
-          centerTitle: true,
-        ),
-        body: _buildBody(),
-        floatingActionButton: _botaoAdicionar(),
+      child: BlocBuilder<ListaTarefaCubit,ListaTarefaCubitModel>(
+        builder: (context,state){
+          return Scaffold(
+            appBar:  AppBar(
+              title: const Text(
+                "Lista de Tarefas",
+              ),
+              centerTitle: true,
+              actions: [
+                IconButton(
+                    onPressed:
+                      _removerTodasTarefas(state)
+                    ,
+                    icon: const Icon(Icons.refresh)
+                )
+              ],
+            ),
+            body: _buildBody(),
+            floatingActionButton: _botaoAdicionar(),
+          );
+        },
       ),
     );
   }
@@ -132,5 +144,16 @@ class _HomeState extends State<Home> {
      }else{
        return const CircleAvatar(child: Icon(Icons.warning, color: Colors.amberAccent,));
      }
+   }
+
+   Function _removerTodasTarefas(ListaTarefaCubitModel state){
+      if(_bloc.state.listaDeTarefas.isNotEmpty){
+        return (){
+          _bloc.removerTodasTarefas();
+        };
+      }else{
+        return (){};
+      }
+
    }
 }
