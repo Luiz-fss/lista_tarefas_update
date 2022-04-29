@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lista_tarefas_atualizado/container/lista-tarefa/bloc/lista-tarefa-cubit-model.dart';
 import 'package:lista_tarefas_atualizado/container/lista-tarefa/bloc/lista-tarefa-cubit.dart';
+import 'package:lista_tarefas_atualizado/container/lista-tarefa/components/alterar-cores-do-sistema.dart';
 import 'package:lista_tarefas_atualizado/utils/dialog-cadastro-nova-tarefa.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -17,6 +18,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
    ListaTarefaCubit _bloc =  ListaTarefaCubit();
+
+   Function _escolhaItemMenu(String escolha){}
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +36,60 @@ class _HomeState extends State<Home> {
               ),
               centerTitle: true,
               actions: [
-                IconButton(
-                    onPressed:
-                      _removerTodasTarefas(state)
-                    ,
-                    icon: const Icon(Icons.refresh)
-                )
+                PopupMenuButton<String>(
+                  onSelected: (itemSelecionado){
+                    if(itemSelecionado.contains("Alterar")){
+                      Navigator.pushNamed(context, AlterarCoresDoSistema.ROUTE,arguments: _bloc);
+                    }
+                  },
+                  itemBuilder: (context){
+                    return [
+                      PopupMenuItem(
+                        value: "Remover",
+                        onTap: _removerTodasTarefas(state),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: const Icon(Icons.delete,color: Colors.red,),
+                            ),
+                            Container(
+                              child: const Text(
+                                "Remover todos itens",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontSize: 14
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: "Alterar",
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: const Icon(Icons.color_lens_outlined, color: Colors.green,),
+                            ),
+                            const Text(
+                              "Alterar Cores do App",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ];
+                  },
+                ),
               ],
             ),
             body: _buildBody(),
@@ -75,7 +126,21 @@ class _HomeState extends State<Home> {
 
   Widget _retornarListagemDeTarefas(ListaTarefaCubitModel state){
     if(state.listaDeTarefas.isEmpty){
-      return Container();
+      return Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8), color: Colors.white),
+        margin: const EdgeInsets.all(8),
+        child: const Center(
+          child: Text(
+            "Você ainda não cadastrou nenhuma tarefa !!",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey
+            ),
+          ),
+        ),
+      );
     }else{
       return Container(
         margin: const EdgeInsets.all(16),
@@ -154,6 +219,5 @@ class _HomeState extends State<Home> {
       }else{
         return (){};
       }
-
    }
 }

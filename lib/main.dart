@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lista_tarefas_atualizado/container/lista-tarefa/components/alterar-cores-do-sistema.dart';
 import 'package:lista_tarefas_atualizado/container/lista-tarefa/components/home.dart';
 
 
@@ -14,7 +15,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home:  Home(),
       routes: {
-        Home.ROUTE: (context) => const Home()
+        Home.ROUTE: (context) => const Home(),
+        AlterarCoresDoSistema.ROUTE: (context) => const AlterarCoresDoSistema()
       },
     );
   }
