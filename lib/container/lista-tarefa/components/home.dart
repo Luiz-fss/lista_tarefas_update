@@ -31,8 +31,12 @@ class _HomeState extends State<Home> {
         builder: (context,state){
           return Scaffold(
             appBar:  AppBar(
-              title: const Text(
+              backgroundColor: state.corAppBar,
+              title:  Text(
                 "Lista de Tarefas",
+                style: TextStyle(
+                  color: state.corTituloAppBar
+                ),
               ),
               centerTitle: true,
               actions: [
@@ -115,12 +119,13 @@ class _HomeState extends State<Home> {
 
   Widget _botaoAdicionar () {
     return FloatingActionButton(
+      backgroundColor: _bloc.state.corBotaoAdicionarTarefa,
       onPressed: ()async{
         await showDialog(context: context, builder: (context){
           return  DialogCadastroNovaTarefa(_bloc);
         });
       },
-      child: const Icon(Icons.add,),
+      child:  Icon(Icons.add,color: _bloc.state.corIconeBotaoAdicionarTarefa,),
     );
   }
 
@@ -205,9 +210,9 @@ class _HomeState extends State<Home> {
 
    Widget _retornarIconeDeStatusDaLista(bool check){
      if(check){
-       return const CircleAvatar(child: Icon(Icons.check, color: Colors.green,),backgroundColor: Colors.black,);
+       return  CircleAvatar(child: Icon(Icons.check, color: _bloc.state.corIconeTarefaConcluida,),backgroundColor: Colors.black,);
      }else{
-       return const CircleAvatar(child: Icon(Icons.warning, color: Colors.amberAccent,));
+       return  CircleAvatar(child: Icon(Icons.warning, color: _bloc.state.corIconeTarefaNaoConcluida,),backgroundColor: _bloc.state.corDoFundoTarefaNaoConcluida,);
      }
    }
 
