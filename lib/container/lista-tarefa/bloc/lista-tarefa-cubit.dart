@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lista_tarefas_atualizado/container/lista-tarefa/bloc/lista-tarefa-cubit-actions.dart';
 import 'package:lista_tarefas_atualizado/container/lista-tarefa/bloc/lista-tarefa-cubit-model.dart';
+import 'package:lista_tarefas_atualizado/utils/tipo-edicao-cor.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTarefaCubitActions{
   ListaTarefaCubit() : super(ListaTarefaCubitModel(
@@ -17,7 +19,8 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
     corIconeTarefaNaoConcluida: Colors.yellow,
     corDoFundoTarefaNaoConcluida: Colors.blueAccent,
     corIconeTarefaConcluida: Colors.green,
-    corDoFundoTarefaConcluida: Colors.black
+    corDoFundoTarefaConcluida: Colors.black,
+    buscouCoresDoSistema: false
   ));
 
   bool verificarSeTemItemSalvo = false;
@@ -153,5 +156,85 @@ class ListaTarefaCubit extends Cubit<ListaTarefaCubitModel> implements ListaTare
   @override
   void mudarCorFundoTarefaConcluida(Color corNova) {
     emit(state.patchState(corDoFundoTarefaConcluida: corNova));
+  }
+
+  Future<void> verificarCoresSalvas()async{
+    SharedPreferences _sharedPreferences;
+    _sharedPreferences = await SharedPreferences.getInstance();
+    int valorAppBar = _sharedPreferences.getInt(TipoEdicaoCorSelecao[TipoEdicaoCor.COR_APP_BAR]);
+    int valorTituloAppBar = _sharedPreferences.getInt(TipoEdicaoCorSelecao[TipoEdicaoCor.COR_TITULO_APP_BAR]);
+    int valorFundoTarefaConcluida = _sharedPreferences.getInt(TipoEdicaoCorSelecao[TipoEdicaoCor.COR_FUNDO_TAREFA_CONCLUIDA]);
+    int valorIconeTarefaConcluida = _sharedPreferences.getInt(TipoEdicaoCorSelecao[TipoEdicaoCor.COR_ICONE_TAREFA_CONCLUIDA]);
+    int valorFundoTarefaNaoConcluida = _sharedPreferences.getInt(TipoEdicaoCorSelecao[TipoEdicaoCor.COR_FUNDO_TAREFA_NAO_CONCLUIDA]);
+    int valorIconeTarefaNaoConcluida = _sharedPreferences.getInt(TipoEdicaoCorSelecao[TipoEdicaoCor.COR_ICONE_TAREFA_NAO_CONCLUIDA]);
+    int valorIconeAdicionarTarefa = _sharedPreferences.getInt(TipoEdicaoCorSelecao[TipoEdicaoCor.COR_ICONE_ADICIONAR_TAREFA]);
+    int valorBotaoAdicionarTarefa = _sharedPreferences.getInt(TipoEdicaoCorSelecao[TipoEdicaoCor.COR_BOTAO_ADICIONAR_TAREFA]);
+
+    Color corAppBar;
+    Color corTituloAppBar;
+    Color corFundoTarefaConcluida;
+    Color corIconeTarefaConcluida;
+    Color corFundoTarefaNaoConcluida;
+    Color corIconeTarefaNaoConcluida;
+    Color corIconeAdicionarTarefa;
+    Color corBotaoAdicionarTarefa;
+
+    if(valorAppBar == null){
+      corAppBar = state.corAppBar;
+    }else{
+      corAppBar = Color(valorAppBar);
+    }
+
+    if(valorTituloAppBar == null){
+      corTituloAppBar = state.corTituloAppBar;
+    }else{
+      corTituloAppBar = Color(valorTituloAppBar);
+    }
+
+    if(valorFundoTarefaConcluida == null){
+      corFundoTarefaConcluida = state.corDoFundoTarefaConcluida;
+    }else{
+      corFundoTarefaConcluida = Color(valorFundoTarefaConcluida);
+    }
+
+    if(valorIconeTarefaConcluida == null){
+      corIconeTarefaConcluida = state.corIconeTarefaConcluida;
+    }else{
+      corIconeTarefaConcluida = Color(valorIconeTarefaConcluida);
+    }
+
+    if(valorFundoTarefaNaoConcluida == null){
+      corFundoTarefaNaoConcluida = state.corDoFundoTarefaNaoConcluida;
+    }else{
+      corFundoTarefaNaoConcluida = Color(valorFundoTarefaNaoConcluida);
+    }
+
+    if(valorIconeTarefaNaoConcluida == null){
+      corIconeTarefaNaoConcluida = state.corIconeTarefaNaoConcluida;
+    }else{
+      corIconeTarefaNaoConcluida = Color(valorIconeTarefaNaoConcluida);
+    }
+    if(valorIconeAdicionarTarefa == null){
+      corIconeAdicionarTarefa = state.corIconeBotaoAdicionarTarefa;
+    }else{
+      corIconeAdicionarTarefa = Color(valorIconeAdicionarTarefa);
+    }
+    if(valorBotaoAdicionarTarefa == null){
+      corBotaoAdicionarTarefa = state.corBotaoAdicionarTarefa;
+    }else{
+      corBotaoAdicionarTarefa = Color(valorBotaoAdicionarTarefa);
+    }
+
+    emit(state.patchState(
+      corAppBar: corAppBar,
+      corDoFundoTarefaConcluida: corFundoTarefaConcluida,
+      corIconeTarefaConcluida: corIconeTarefaConcluida,
+      corDoFundoTarefaNaoConcluida: corFundoTarefaNaoConcluida,
+      corIconeTarefaNaoConcluida: corIconeTarefaNaoConcluida,
+      corIconeBotaoAdicionarTarefa: corIconeAdicionarTarefa,
+      corBotaoAdicionarTarefa: corBotaoAdicionarTarefa,
+      corTituloAppBar: corTituloAppBar,
+      buscouCoresDoSistema: true
+    ));
   }
 }
