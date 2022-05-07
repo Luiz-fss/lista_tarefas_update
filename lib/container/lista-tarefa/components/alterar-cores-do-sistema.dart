@@ -46,7 +46,6 @@ class _AlterarCoresDoSistemaState extends State<AlterarCoresDoSistema> {
 
   Widget _montarCamposDeEdicaoDasCores(){
     return Container(
-
       child: ListView(
         children: [
           Container(
@@ -151,7 +150,8 @@ class _AlterarCoresDoSistemaState extends State<AlterarCoresDoSistema> {
                 await editarCorFundoTarefaConcluido(context);
                 _sharedPreferences.setInt(
                     TipoEdicaoCorSelecao[TipoEdicaoCor.COR_FUNDO_TAREFA_CONCLUIDA],
-                    _bloc.state.corDoFundoTarefaConcluida.value);
+                    _bloc.state.corDoFundoTarefaConcluida.value
+                );
               },
               iconeDaOpcao: const Icon(Icons.add_circle,color: Colors.green,),
             ),
@@ -373,7 +373,7 @@ class _AlterarCoresDoSistemaState extends State<AlterarCoresDoSistema> {
           child:  ColorPicker(
             pickerColor: Colors.blue,
             onColorChanged: (Color changeColor){
-              _bloc.state.corIconeTarefaConcluida = changeColor;
+              _bloc.state.corDoFundoTarefaConcluida = changeColor;
             },
             showLabel: true,
             pickerAreaHeightPercent: 0.8,
@@ -384,7 +384,7 @@ class _AlterarCoresDoSistemaState extends State<AlterarCoresDoSistema> {
           FlatButton(
             child: const Text('Ok'),
             onPressed: () {
-              _bloc.mudarCorTarefaConcluida(_bloc.state.corIconeTarefaConcluida);
+              _bloc.mudarCorFundoTarefaConcluida(_bloc.state.corDoFundoTarefaConcluida);
               Navigator.pop(context);
             },
           ),

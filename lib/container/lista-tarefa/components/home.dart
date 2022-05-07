@@ -29,6 +29,9 @@ class _HomeState extends State<Home> {
       },
       child: BlocBuilder<ListaTarefaCubit,ListaTarefaCubitModel>(
         builder: (context,state){
+          if(!state.buscouCoresDoSistema){
+            _bloc.verificarCoresSalvas();
+          }
           return Scaffold(
             appBar:  AppBar(
               backgroundColor: state.corAppBar,
@@ -210,9 +213,19 @@ class _HomeState extends State<Home> {
 
    Widget _retornarIconeDeStatusDaLista(bool check){
      if(check){
-       return  CircleAvatar(child: Icon(Icons.check, color: _bloc.state.corIconeTarefaConcluida,),backgroundColor: Colors.black,);
+       return CircleAvatar(
+         child: Icon(
+           Icons.check,
+           color: _bloc.state.corIconeTarefaConcluida,
+         ),
+         backgroundColor: _bloc.state.corDoFundoTarefaConcluida,);
      }else{
-       return  CircleAvatar(child: Icon(Icons.warning, color: _bloc.state.corIconeTarefaNaoConcluida,),backgroundColor: _bloc.state.corDoFundoTarefaNaoConcluida,);
+       return CircleAvatar(
+         child: Icon(
+           Icons.warning,
+           color: _bloc.state.corIconeTarefaNaoConcluida,
+         ),
+         backgroundColor: _bloc.state.corDoFundoTarefaNaoConcluida,);
      }
    }
 
